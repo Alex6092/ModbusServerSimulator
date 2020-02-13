@@ -7,7 +7,9 @@
 
 class ModbusVariableSimulation
 {
-	std::map<int, int> memory;
+	std::map<int, bool> coilsMemory;
+	std::map<int, bool> binaryInputsMemory;
+	std::map<int, int> holdingRegistersmemory;
 	std::vector<ModbusVariableSimulationEventListener *> eventListeners;
 
 
@@ -16,10 +18,23 @@ public:
 	ModbusVariableSimulation();
 	~ModbusVariableSimulation();
 
-	int readValue(int wordAddress);
-	bool writeValue(int wordAddress, int value);
+	// Coils:
+	bool readCoilValue(int coilAddress);
+	bool writeCoilValue(int coilAddress, bool value);
 
-	inline const std::map<int, int> & getMemory() { return memory; }
+	// Inputs :
+	bool readBinaryInputValue(int inputAddress);
+	bool simulateBinaryInputValue(int inputAddress, bool value);
+
+	// Holding registers :
+	int readHoldingRegisterValue(int wordAddress);
+	bool writeHoldingRegisterValue(int wordAddress, int value);
+
+	inline const std::map<int, int> & getHoldingRegistersMemory() { return holdingRegistersmemory; }
+
+	inline const std::map<int, bool> & getCoilsMemory() { return coilsMemory; }
+
+	inline const std::map<int, bool> & getBinaryInputsMemory() { return binaryInputsMemory; }
 
 	inline void addEventListener(ModbusVariableSimulationEventListener * listener)
 	{

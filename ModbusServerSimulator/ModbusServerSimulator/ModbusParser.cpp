@@ -3,6 +3,9 @@
 
 #include "ModbusReadMultipleWord.h"
 #include "ModbusWriteWord.h"
+#include "ModbusReadCoils.h"
+#include "ModbusForceSingleCoil.h"
+#include "ModbusReadDigitalInputs.h"
 
 #define LENGTH_IDX 4
 #define UNIT_IDENTIFIER_IDX 6
@@ -54,6 +57,7 @@ void ModbusParser::parse(ClientState * client, std::vector<unsigned char> & rece
 
 				switch (functionCode)
 				{
+				// Holding registers :
 				case 0x03:
 					if (extractedData.size() >= 12)
 					{
@@ -69,6 +73,40 @@ void ModbusParser::parse(ClientState * client, std::vector<unsigned char> & rece
 						int wordAddress = (extractedData[8] << 8) | extractedData[9];
 						int wordValue = (extractedData[10] << 8) | extractedData[11];
 						operations.Add(new ModbusWriteWord(client, transactionId, protocolId, unitIdentifier, wordAddress, wordValue));
+					}
+					break;
+
+				// Coils :
+				case 0x01:
+					if (extractedData.size() >= 12)
+					{
+						int startAddress = (extractedData[8] << 8) | extractedData[9];
+						int nbCoil = (extractedData[10] << 8) | extractedData[11];
+						operations.Add(new ModbusReadCoils(client, transactionId, protocolId, unitIdentifier, startAddress, nbCoil));
+					}
+					break;
+
+				case 0x05:
+					if (extractedData.size() >= 12)
+					{
+						int coilAddress = (extractedData[8] << 8) | extractedData[9];
+						int coilValue = (extractedData[10] << 8) | extractedData[11];
+
+						bool bValue = true;
+						if (coilValue == 0)
+							bValue = false;
+
+						operations.Add(new ModbusForceSingleCoil(client, transactionId, protocolId, unitIdentifier, coilAddress, coilValue));
+					}
+					break;
+
+				// Digital inputs :
+				case 0x02:
+					if (extractedData.size() >= 12)
+					{
+						int startAddress = (extractedData[8] << 8) | extractedData[9];
+						int nbInput = (extractedData[10] << 8) | extractedData[11];
+						operations.Add(new ModbusReadDigitalInputs(client, transactionId, protocolId, unitIdentifier, startAddress, nbInput));
 					}
 					break;
 

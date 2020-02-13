@@ -1,23 +1,24 @@
-#include "ModbusWriteWord.h"
-#include "ModbusParser.h"
+#include "ModbusForceSingleCoil.h"
 #include "TcpServer.h"
+#include "ModbusParser.h"
 
 
-ModbusWriteWord::ModbusWriteWord(ClientState * client, int transactionId, int protocolId, int unitIdentifier, int wordAddress, int wordValue)
+
+ModbusForceSingleCoil::ModbusForceSingleCoil(ClientState * client, int transactionId, int protocolId, int unitIdentifier, int coilAddress, bool coilValue)
 	: ModbusOperation(client, transactionId, protocolId, unitIdentifier)
 {
-	this->wordAddress = wordAddress;
-	this->wordValue = wordValue;
+	this->coilAddress = coilAddress;
+	this->coilValue = coilValue;
 }
 
 
-ModbusWriteWord::~ModbusWriteWord()
+ModbusForceSingleCoil::~ModbusForceSingleCoil()
 {
 }
 
-void ModbusWriteWord::Execute(ModbusVariableSimulation * simulation)
+void ModbusForceSingleCoil::Execute(ModbusVariableSimulation * simulation)
 {
-	simulation->writeHoldingRegisterValue(wordAddress, wordValue);
+	simulation->writeCoilValue(coilAddress, coilValue);
 
 	int sentenceLength = 12;
 	int modbusLength = 6;
@@ -36,17 +37,17 @@ void ModbusWriteWord::Execute(ModbusVariableSimulation * simulation)
 	// 1 byte unitIdentifier :
 	sentence[i++] = getUnitIdentifier() & 0x00FF;
 	// 1 byte function :
-	sentence[i++] = 0x06;
+	sentence[i++] = 0x05;
 
 	// 2 bytes wordAddress :
-	sentence[i++] = (wordAddress & 0xFF00) >> 8;
-	sentence[i++] = wordAddress & 0x00FF;
+	sentence[i++] = (coilAddress & 0xFF00) >> 8;
+	sentence[i++] = coilAddress & 0x00FF;
 
 	// 2 bytes value :
-	sentence[i++] = (wordValue & 0xFF00) >> 8;
-	sentence[i++] = wordValue & 0x00FF;
+	sentence[i++] = (coilValue & 0xFF00) >> 8;
+	sentence[i++] = coilValue & 0x00FF;
 
 	TcpServer<ModbusParser, ClientState>::Send(getClient(), (char*)sentence, sentenceLength);
-
+	
 	delete sentence;
 }

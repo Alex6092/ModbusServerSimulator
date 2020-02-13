@@ -133,8 +133,11 @@
   <ItemGroup>
     <ClCompile Include="ClientState.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModbusForceSingleCoil.cpp" />
     <ClCompile Include="ModbusOperation.cpp" />
     <ClCompile Include="ModbusParser.cpp" />
+    <ClCompile Include="ModbusReadCoils.cpp" />
+    <ClCompile Include="ModbusReadDigitalInputs.cpp" />
     <ClCompile Include="ModbusReadMultipleWord.cpp" />
     <ClCompile Include="ModbusServerHMI.cpp" />
     <ClCompile Include="ModbusVariableSimulation.cpp" />
@@ -147,8 +150,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientState.h" />
+    <ClInclude Include="ModbusForceSingleCoil.h" />
     <ClInclude Include="ModbusOperation.h" />
     <ClInclude Include="ModbusParser.h" />
+    <ClInclude Include="ModbusReadCoils.h" />
+    <ClInclude Include="ModbusReadDigitalInputs.h" />
     <ClInclude Include="ModbusReadMultipleWord.h" />
     <ClInclude Include="ModbusServerHMI.h">
       <FileType>CppForm</FileType>

@@ -22,13 +22,21 @@ namespace ModbusServerSimulator {
 	{
 	
 	private: System::Windows::Forms::Timer^  executeOperationTimer;
-	private: System::Windows::Forms::DataGridView^  wordData;
+	private: System::Windows::Forms::DataGridView^  holdingRegistersData;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Address;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Value;
 
 	private: TcpServer<ModbusParser, ClientState> * server;
 	private: ModbusVariableSimulation * simulation;
 	private: ModbusVariableSimulationEventListenerHMIAdapter * simuEventListener;
+	private: System::Windows::Forms::DataGridView^  coilsData;
+
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn2;
+	private: System::Windows::Forms::DataGridView^  digitalInputData;
+
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn3;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn4;
 	private: bool needUpdateHMI;
 	public: void setNeedUpdateHMIFlag() { needUpdateHMI = true; }
 
@@ -48,7 +56,7 @@ namespace ModbusServerSimulator {
 				simulation->addEventListener(simuEventListener);
 				server = new TcpServer<ModbusParser, ClientState>(502);
 
-				wordData->Rows->Clear();
+				holdingRegistersData->Rows->Clear();
 			}
 			catch (std::exception e)
 			{
@@ -97,10 +105,18 @@ namespace ModbusServerSimulator {
 		{
 			this->components = (gcnew System::ComponentModel::Container());
 			this->executeOperationTimer = (gcnew System::Windows::Forms::Timer(this->components));
-			this->wordData = (gcnew System::Windows::Forms::DataGridView());
+			this->holdingRegistersData = (gcnew System::Windows::Forms::DataGridView());
 			this->Address = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Value = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wordData))->BeginInit();
+			this->coilsData = (gcnew System::Windows::Forms::DataGridView());
+			this->dataGridViewTextBoxColumn1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->dataGridViewTextBoxColumn2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->digitalInputData = (gcnew System::Windows::Forms::DataGridView());
+			this->dataGridViewTextBoxColumn3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->dataGridViewTextBoxColumn4 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->holdingRegistersData))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->coilsData))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->digitalInputData))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// executeOperationTimer
@@ -109,18 +125,21 @@ namespace ModbusServerSimulator {
 			this->executeOperationTimer->Interval = 50;
 			this->executeOperationTimer->Tick += gcnew System::EventHandler(this, &ModbusServerHMI::executeOperationTimer_Tick);
 			// 
-			// wordData
+			// holdingRegistersData
 			// 
-			this->wordData->AllowUserToAddRows = false;
-			this->wordData->AllowUserToDeleteRows = false;
-			this->wordData->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->wordData->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) { this->Address, this->Value });
-			this->wordData->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->wordData->Location = System::Drawing::Point(0, 0);
-			this->wordData->Name = L"wordData";
-			this->wordData->Size = System::Drawing::Size(609, 305);
-			this->wordData->TabIndex = 0;
-			this->wordData->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &ModbusServerHMI::wordData_CellEndEdit);
+			this->holdingRegistersData->AllowUserToAddRows = false;
+			this->holdingRegistersData->AllowUserToDeleteRows = false;
+			this->holdingRegistersData->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->holdingRegistersData->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
+				this->Address,
+					this->Value
+			});
+			this->holdingRegistersData->Dock = System::Windows::Forms::DockStyle::Left;
+			this->holdingRegistersData->Location = System::Drawing::Point(0, 0);
+			this->holdingRegistersData->Name = L"holdingRegistersData";
+			this->holdingRegistersData->Size = System::Drawing::Size(277, 488);
+			this->holdingRegistersData->TabIndex = 0;
+			this->holdingRegistersData->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &ModbusServerHMI::wordData_CellEndEdit);
 			// 
 			// Address
 			// 
@@ -133,16 +152,74 @@ namespace ModbusServerSimulator {
 			this->Value->HeaderText = L"Value";
 			this->Value->Name = L"Value";
 			// 
+			// coilsData
+			// 
+			this->coilsData->AllowUserToAddRows = false;
+			this->coilsData->AllowUserToDeleteRows = false;
+			this->coilsData->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->coilsData->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
+				this->dataGridViewTextBoxColumn1,
+					this->dataGridViewTextBoxColumn2
+			});
+			this->coilsData->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->coilsData->Location = System::Drawing::Point(277, 0);
+			this->coilsData->Name = L"coilsData";
+			this->coilsData->Size = System::Drawing::Size(618, 488);
+			this->coilsData->TabIndex = 1;
+			this->coilsData->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &ModbusServerHMI::coilsData_CellEndEdit);
+			// 
+			// dataGridViewTextBoxColumn1
+			// 
+			this->dataGridViewTextBoxColumn1->HeaderText = L"Address";
+			this->dataGridViewTextBoxColumn1->Name = L"dataGridViewTextBoxColumn1";
+			this->dataGridViewTextBoxColumn1->ReadOnly = true;
+			// 
+			// dataGridViewTextBoxColumn2
+			// 
+			this->dataGridViewTextBoxColumn2->HeaderText = L"Value";
+			this->dataGridViewTextBoxColumn2->Name = L"dataGridViewTextBoxColumn2";
+			// 
+			// digitalInputData
+			// 
+			this->digitalInputData->AllowUserToAddRows = false;
+			this->digitalInputData->AllowUserToDeleteRows = false;
+			this->digitalInputData->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->digitalInputData->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
+				this->dataGridViewTextBoxColumn3,
+					this->dataGridViewTextBoxColumn4
+			});
+			this->digitalInputData->Dock = System::Windows::Forms::DockStyle::Right;
+			this->digitalInputData->Location = System::Drawing::Point(584, 0);
+			this->digitalInputData->Name = L"digitalInputData";
+			this->digitalInputData->Size = System::Drawing::Size(311, 488);
+			this->digitalInputData->TabIndex = 2;
+			this->digitalInputData->CellEndEdit += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &ModbusServerHMI::digitalInputData_CellEndEdit);
+			// 
+			// dataGridViewTextBoxColumn3
+			// 
+			this->dataGridViewTextBoxColumn3->HeaderText = L"Address";
+			this->dataGridViewTextBoxColumn3->Name = L"dataGridViewTextBoxColumn3";
+			this->dataGridViewTextBoxColumn3->ReadOnly = true;
+			// 
+			// dataGridViewTextBoxColumn4
+			// 
+			this->dataGridViewTextBoxColumn4->HeaderText = L"Value";
+			this->dataGridViewTextBoxColumn4->Name = L"dataGridViewTextBoxColumn4";
+			// 
 			// ModbusServerHMI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(609, 305);
-			this->Controls->Add(this->wordData);
+			this->ClientSize = System::Drawing::Size(895, 488);
+			this->Controls->Add(this->digitalInputData);
+			this->Controls->Add(this->coilsData);
+			this->Controls->Add(this->holdingRegistersData);
 			this->Name = L"ModbusServerHMI";
 			this->Text = L"Modbus Server Simulator";
 			this->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &ModbusServerHMI::ModbusServerHMI_Paint);
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wordData))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->holdingRegistersData))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->coilsData))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->digitalInputData))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -179,34 +256,101 @@ namespace ModbusServerSimulator {
 		}
 	}
 	private: System::Void wordData_CellEndEdit(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
-		System::String^ valueStr = wordData->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value->ToString();
+		System::String^ valueStr = holdingRegistersData->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value->ToString();
 		int iVal;
 		if (Int32::TryParse(valueStr, iVal))
 		{
-			System::String^ addressStr = wordData->Rows[e->RowIndex]->Cells[0]->Value->ToString();
+			System::String^ addressStr = holdingRegistersData->Rows[e->RowIndex]->Cells[0]->Value->ToString();
 			int iAddr;
 			if (Int32::TryParse(addressStr, iAddr))
 			{
-				simulation->writeValue(iAddr, iVal);
+				simulation->writeHoldingRegisterValue(iAddr, iVal);
 			}
 		}
 	}
 
 	public: void updateHMI() {
-		wordData->Rows->Clear();
+		// Holding registers :
+		holdingRegistersData->Rows->Clear();
 
-		const std::map<int, int> & memory = simulation->getMemory();
+		const std::map<int, int> & holdingRegistersMemory = simulation->getHoldingRegistersMemory();
 
-		wordData->Rows->Add(memory.size());
-
-		int row = 0;
-		for (auto it = memory.cbegin(); it != memory.cend(); it++)
+		if (holdingRegistersMemory.size() > 0)
 		{
-			wordData->Rows[row]->Cells[0]->Value = (*it).first;
-			wordData->Rows[row]->Cells[1]->Value = (*it).second;
-			row++;
+			holdingRegistersData->Rows->Add(holdingRegistersMemory.size());
+
+			int row = 0;
+			for (auto it = holdingRegistersMemory.cbegin(); it != holdingRegistersMemory.cend(); it++)
+			{
+				holdingRegistersData->Rows[row]->Cells[0]->Value = (*it).first;
+				holdingRegistersData->Rows[row]->Cells[1]->Value = (*it).second;
+				row++;
+			}
+		}
+
+		// Coils :
+		coilsData->Rows->Clear();
+
+		const std::map<int, bool> & coilsMemory = simulation->getCoilsMemory();
+
+		if (coilsMemory.size() > 0)
+		{
+			coilsData->Rows->Add(coilsMemory.size());
+
+			int row = 0;
+			for (auto it = coilsMemory.cbegin(); it != coilsMemory.cend(); it++)
+			{
+				coilsData->Rows[row]->Cells[0]->Value = (*it).first;
+				coilsData->Rows[row]->Cells[1]->Value = (*it).second;
+				row++;
+			}
+		}
+
+		digitalInputData->Rows->Clear();
+
+		// Digital inputs :
+		const std::map<int, bool> & digitalInputsMemory = simulation->getBinaryInputsMemory();
+
+		if (digitalInputsMemory.size() > 0)
+		{
+			digitalInputData->Rows->Add(digitalInputsMemory.size());
+
+			int row = 0;
+			for (auto it = digitalInputsMemory.cbegin(); it != digitalInputsMemory.cend(); it++)
+			{
+				digitalInputData->Rows[row]->Cells[0]->Value = (*it).first;
+				digitalInputData->Rows[row]->Cells[1]->Value = (*it).second;
+				row++;
+			}
 		}
 	}
 
+	private: System::Void coilsData_CellEndEdit(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
+		System::String^ valueStr = coilsData->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value->ToString();
+		int iVal;
+		if (Int32::TryParse(valueStr, iVal))
+		{
+			System::String^ addressStr = coilsData->Rows[e->RowIndex]->Cells[0]->Value->ToString();
+			int iAddr;
+			if (Int32::TryParse(addressStr, iAddr))
+			{
+				simulation->writeCoilValue(iAddr, iVal);
+			}
+		}
+	}
+
+	private: System::Void digitalInputData_CellEndEdit(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
+		System::String^ valueStr = digitalInputData->Rows[e->RowIndex]->Cells[e->ColumnIndex]->Value->ToString();
+		int iVal;
+		if (Int32::TryParse(valueStr, iVal))
+		{
+			System::String^ addressStr = digitalInputData->Rows[e->RowIndex]->Cells[0]->Value->ToString();
+			int iAddr;
+			if (Int32::TryParse(addressStr, iAddr))
+			{
+				simulation->simulateBinaryInputValue(iAddr, iVal);
+			}
+		}
+	}
 };
 }

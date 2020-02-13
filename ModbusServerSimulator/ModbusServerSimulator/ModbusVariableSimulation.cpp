@@ -11,13 +11,14 @@ ModbusVariableSimulation::~ModbusVariableSimulation()
 {
 }
 
-int ModbusVariableSimulation::readValue(int wordAddress)
+// Coils:
+bool ModbusVariableSimulation::readCoilValue(int coilAddress)
 {
 	bool bWordCreated = false;
-	if (memory.find(wordAddress) == memory.end())
+	if (coilsMemory.find(coilAddress) == coilsMemory.end())
 		bWordCreated = true;
 
-	int result = memory[wordAddress];
+	int result = coilsMemory[coilAddress];
 
 	if (bWordCreated)
 		notifyValueChange();
@@ -25,9 +26,53 @@ int ModbusVariableSimulation::readValue(int wordAddress)
 	return result;
 }
 
-bool ModbusVariableSimulation::writeValue(int wordAddress, int value)
+bool ModbusVariableSimulation::writeCoilValue(int coilAddress, bool value)
 {
-	memory[wordAddress] = value;
+	coilsMemory[coilAddress] = value;
+	notifyValueChange();
+	return true;
+}
+
+// Inputs :
+bool ModbusVariableSimulation::readBinaryInputValue(int inputAddress)
+{
+	bool bWordCreated = false;
+	if (binaryInputsMemory.find(inputAddress) == binaryInputsMemory.end())
+		bWordCreated = true;
+
+	int result = binaryInputsMemory[inputAddress];
+
+	if (bWordCreated)
+		notifyValueChange();
+
+	return result;
+}
+
+bool ModbusVariableSimulation::simulateBinaryInputValue(int inputAddress, bool value)
+{
+	binaryInputsMemory[inputAddress] = value;
+	notifyValueChange();
+	return true;
+}
+
+// Holding registers :
+int ModbusVariableSimulation::readHoldingRegisterValue(int wordAddress)
+{
+	bool bWordCreated = false;
+	if (holdingRegistersmemory.find(wordAddress) == holdingRegistersmemory.end())
+		bWordCreated = true;
+
+	int result = holdingRegistersmemory[wordAddress];
+
+	if (bWordCreated)
+		notifyValueChange();
+
+	return result;
+}
+
+bool ModbusVariableSimulation::writeHoldingRegisterValue(int wordAddress, int value)
+{
+	holdingRegistersmemory[wordAddress] = value;
 	notifyValueChange();
 	return true;
 }
